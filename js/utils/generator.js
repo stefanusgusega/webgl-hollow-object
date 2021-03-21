@@ -8,7 +8,7 @@ const _generateColors = choosenColors => {
 
 export const blockGenerator = (p, l, t, front, back, upper, bottom, right, left) => {
     // Using gl.TRIANGLES
-    const vfront = [
+    const vback = [
         0, 0, 0,
         0, t, 0,
         p, 0, 0,
@@ -16,7 +16,7 @@ export const blockGenerator = (p, l, t, front, back, upper, bottom, right, left)
         p, t, 0,
         p, 0, 0
     ]
-    const vback = [
+    const vfront = [
         0, 0, l,
         p, 0, l,
         0, t, l,
@@ -24,7 +24,7 @@ export const blockGenerator = (p, l, t, front, back, upper, bottom, right, left)
         p, t, l,
         0, t, l
     ]
-    const vupper = [
+    const vbottom = [
         0, 0, 0,
         p, 0, 0,
         0, 0, l,
@@ -32,7 +32,7 @@ export const blockGenerator = (p, l, t, front, back, upper, bottom, right, left)
         p, 0, 0,
         p, 0, l
     ]
-    const vbottom = [
+    const vupper = [
         0, t, 0,
         0, t, l,
         p, t, 0,
@@ -62,6 +62,11 @@ export const blockGenerator = (p, l, t, front, back, upper, bottom, right, left)
     
     return [vertices, colors]
 }
+
+// export const pyramidGenerator = () => {
+//     let arr;
+//     arr = blockGenerator()
+// }
 
 export const fGenerator = () => {
     // 'F' OBJECT VERTICES AND COLOR EXAMPLES USING gl.TRIANGLES

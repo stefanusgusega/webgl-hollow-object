@@ -1,5 +1,6 @@
 import initShader from './loader/shaders.js';
 import GLObject from './objects/GLObject.js';
+import { makePyramidEdges } from './objects/Pyramid.js';
 import Renderer from './renderer.js';
 import { fGenerator, blockGenerator } from './utils/generator.js';
 import { orthographic } from './utils/projection.js';
@@ -56,13 +57,13 @@ async function main() {
     glObject2.setBaseProjectionMatrix(baseProjection);
     glObject2.setVertexArray(vertices);
     glObject2.setColor(colors);
-    glObject2.setPosition(300, 350, 0);
-    glObject2.setRotation(60, 60, 60);
+    glObject2.setPosition(300, 200, 0);
+    glObject2.setRotation(90, 0, 0);
     glObject2.setScale(1, 1, 1);
     glObject2.bind();
     
     [vertices, colors] = blockGenerator(
-        300, 50, 50,
+        50, 50, 300,
         [200, 70, 120],
         [80, 70, 200],
         [255, 0, 0],
@@ -74,15 +75,24 @@ async function main() {
     cube.setBaseProjectionMatrix(baseProjection);
     cube.setVertexArray(vertices);
     cube.setColor(colors);
-    cube.setPosition(400, 400, 0);
+    cube.setPosition(200, 200, 0);
     cube.setRotation(0, 90, 0);
     cube.setScale(1, 1, 1);
     cube.bind();
 
     const renderer = new Renderer();
-    renderer.addObject(glObject);
-    renderer.addObject(glObject2);
-    renderer.addObject(cube);
+    const pyramid = makePyramidEdges(program, gl, baseProjection);
+    // renderer.addObject(glObject);
+    // renderer.addObject(glObject2);
+    // renderer.addObject(cube);
+    pyramid.forEach(edge => {
+        renderer.addObject(edge);
+        // console.log(edge);
+    });
+    // renderer.objects.forEach(i => {
+    //     console.log(i);
+    // })
+    // renderer.addObject(pyramid);
     function render() {
         gl.clearColor(1, 1, 1, 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -92,10 +102,13 @@ async function main() {
         [x, y, z] = glObject.getRotation();
         glObject.setRotation(x + 1, y, z);
         [x, y, z] = glObject2.getRotation();
-        glObject2.setRotation(x + 0.5, y + 1, z + 2);
+        glObject2.setRotation(x, y + 1 , z );
         [x, y, z] = cube.getRotation();
         cube.setRotation(x + 0.1, y + 1 , z);
-
+        [x,y,z] = pyramid[0].getRotation();
+        pyramid[0].setRotation(x+1,y+1,z);
+        [x,y,z] = pyramid[1].getRotation();
+        pyramid[1].setRotation(x+1,y+1,z);
         renderer.render();
         requestAnimationFrame(render);
     }
