@@ -87,7 +87,7 @@ async function main() {
     // renderer.addObject(cube);
     pyramid.forEach(edge => {
         renderer.addObject(edge);
-        // console.log(edge);
+        console.log(edge);
     });
     // renderer.objects.forEach(i => {
     //     console.log(i);
@@ -106,9 +106,9 @@ async function main() {
         [x, y, z] = cube.getRotation();
         cube.setRotation(x + 0.1, y + 1 , z);
         [x,y,z] = pyramid[0].getRotation();
-        pyramid[0].setRotation(x+1,y+1,z);
+        pyramid[0].setRotation(x+0.5,y+0.5,z+0.5);
         [x,y,z] = pyramid[1].getRotation();
-        pyramid[1].setRotation(x+1,y+1,z);
+        pyramid[1].setRotation(x,y+1,z);
         renderer.render();
         requestAnimationFrame(render);
     }

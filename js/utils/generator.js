@@ -1,4 +1,4 @@
-const _generateColors = choosenColors => {
+export const _generateColors = choosenColors => {
     let colors = []
     for (let i = 0; i < choosenColors.length; i++)
         for (let j = 0; j < 6; j++)
