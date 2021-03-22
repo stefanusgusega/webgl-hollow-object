@@ -85,14 +85,10 @@ async function main() {
     // renderer.addObject(glObject);
     // renderer.addObject(glObject2);
     // renderer.addObject(cube);
-    pyramid.forEach(edge => {
-        renderer.addObject(edge);
-        console.log(edge);
-    });
     // renderer.objects.forEach(i => {
     //     console.log(i);
     // })
-    // renderer.addObject(pyramid);
+    renderer.addObject(pyramid);
     function render() {
         gl.clearColor(1, 1, 1, 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -105,10 +101,8 @@ async function main() {
         glObject2.setRotation(x, y + 1 , z );
         [x, y, z] = cube.getRotation();
         cube.setRotation(x + 0.1, y + 1 , z);
-        [x,y,z] = pyramid[0].getRotation();
-        pyramid[0].setRotation(x+0.5,y+0.5,z+0.5);
-        [x,y,z] = pyramid[1].getRotation();
-        pyramid[1].setRotation(x,y+1,z);
+        [x,y,z] = pyramid.getRotation();
+        pyramid.setRotation(x+0.5,y+0.5,z+0.5);
         renderer.render();
         requestAnimationFrame(render);
     }

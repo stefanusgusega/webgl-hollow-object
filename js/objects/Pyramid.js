@@ -10,9 +10,7 @@ export const pyramidGenerator = (back, right, front, left,
      bottom, top,
      backInner, rightInner, frontInner, leftInner, 
      stand) => {
-    // const t = 10;
-    // const longerEdge = 100;
-    // const normalEdge =
+    
     const vertices = [
         // back side of base block
         // clock
@@ -149,6 +147,7 @@ export const pyramidGenerator = (back, right, front, left,
         10, 0, 0,
         10, 30, 0,
 
+        // THE TRIANGLES
         // front triangle leftside
         0, 30, 100,
         10, 30, 100,
@@ -163,11 +162,120 @@ export const pyramidGenerator = (back, right, front, left,
         50, 100, 50,
         50, 100, 50,
         50, 90, 60,
-        90, 30, 100
+        90, 30, 100,
+
+        // front triangle leftside (inner)
+        0, 30, 100,
+        50, 90, 60,
+        10, 30, 100,
+        50, 90, 60,
+        0, 30, 100,
+        50, 100, 50,
+
+        // front triangle rightside (inner)
+        90, 30, 100,
+        50, 100, 50,
+        100, 30, 100,
+        50, 100, 50,
+        90, 30, 100,
+        50, 90, 60,
 
         // right triangle leftside
+        100, 30, 100,
+        100, 30, 90,
+        60, 90, 50,
+        60, 90, 50,
+        50, 100, 50,
+        100, 30, 100,
 
-        
+        // right triangle rightside
+        100, 30, 10,
+        100, 30, 0,
+        50, 100, 50,
+        50, 100, 50,
+        60, 90, 50,
+        100, 30, 10,
+
+        // right triangle leftside (inner)
+        100, 30, 100,
+        60, 90, 50,
+        100, 30, 90,
+        60, 90, 50,
+        100, 30, 100,
+        50, 100, 50,
+
+        // right triangle rightside (inner)
+        100, 30, 10,
+        50, 100, 50,
+        100, 30, 0,
+        50, 100, 50,
+        100, 30, 10,
+        60, 90, 50,
+
+        // back triangle leftside
+        0, 30, 0,
+        50, 100, 50,
+        50, 90, 40,
+        50, 90, 40,
+        10, 30, 0,
+        0, 30, 0,
+
+        // back triangle rightside
+        90, 30, 0,
+        50, 100, 50,
+        100, 30, 0,
+        50, 100, 50,
+        90, 30, 0,
+        50, 90, 40,
+
+        // back triangle leftside (inner)
+        0, 30, 0,
+        50, 90, 40,
+        50, 100, 50,
+        50, 90, 40,
+        0, 30, 0,
+        10, 30, 0,
+
+        // back triangle rightside (inner)
+        90, 30, 0,
+        100, 30, 0,
+        50, 100, 50,
+        50, 100, 50,
+        50, 90, 40,
+        90, 30, 0,
+
+        // left triangle backside
+        0, 30, 0,
+        0, 30, 10,
+        40, 90, 50,
+        40, 90, 50,
+        50, 100, 50,
+        0, 30, 0,
+
+        // left triangle frontside
+        0, 30, 90,
+        0, 30, 100,
+        50, 100, 50,
+        50, 100, 50,
+        40, 90, 50,
+        0, 30, 90,
+
+         // left triangle backside (inner)
+         0, 30, 0,
+         0, 30, 10,
+         40, 90, 50,
+         40, 90, 50,
+         50, 100, 50,
+         0, 30, 0,
+ 
+         // left triangle frontside (inner)
+         0, 30, 90,
+         0, 30, 100,
+         50, 100, 50,
+         50, 100, 50,
+         40, 90, 50,
+         0, 30, 90
+
 
     ]
     // const vertices = 
@@ -175,7 +283,12 @@ export const pyramidGenerator = (back, right, front, left,
         bottom, bottom, bottom, bottom, 
         top, top, top, top, 
         backInner, rightInner, frontInner, leftInner, 
-        stand, stand]);
+        stand, stand, stand, stand,
+        stand, stand, stand, stand,
+        stand, stand, stand, stand,
+        stand, stand, stand, stand
+        
+    ]);
     return [vertices, colors];
 }
 export function makePyramidEdges(program, gl, baseProjection) {
@@ -194,8 +307,6 @@ export function makePyramidEdges(program, gl, baseProjection) {
         [randomInt(), randomInt(), randomInt()],
         [randomInt(), randomInt(), randomInt()],
         [randomInt(), randomInt(), randomInt()],
-        [randomInt(), randomInt(), randomInt()],
-
     )
     obj1.setVertexArray(ver1);
     obj1.setColor(colors1);
@@ -204,23 +315,5 @@ export function makePyramidEdges(program, gl, baseProjection) {
     obj1.setScale(2,2,2);
     obj1.bind();
 
-    const obj2 = new GLObject(0, program, gl, gl.TRIANGLES);
-    obj2.setBaseProjectionMatrix(baseProjection);
-    let ver2, colors2;
-    [ver2, colors2] = blockGenerator(
-        30, 30, 300,
-        [randomInt(), randomInt(), randomInt()],
-        [randomInt(), randomInt(), randomInt()],
-        [randomInt(), randomInt(), randomInt()],
-        [randomInt(), randomInt(), randomInt()],
-        [randomInt(), randomInt(), randomInt()],
-        [randomInt(), randomInt(), randomInt()],
-    )
-    obj2.setVertexArray(ver2);
-    obj2.setColor(colors2);
-    obj2.setPosition(200,230,20);
-    obj2.setRotation(0,0,0);
-    obj2.setScale(1,1,1);
-    obj2.bind();
-    return [obj1, obj2];
+    return obj1;
 }
