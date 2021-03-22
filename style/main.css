@@ -3,6 +3,7 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    font-family: Lato;
 }
 
 .main-container {
@@ -15,3 +16,8 @@
     /* background-color: red; */
     border: 2px solid black;
 }
+
+.p-1 {
+    padding: 1rem;
+}
+
