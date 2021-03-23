@@ -185,9 +185,6 @@ async function main() {
     // renderer.addObject(cube);
     renderer.addObject(pyramid);
     renderer.addObject(pyramid2);
-    renderer.objects.forEach(i => {
-        console.log(i);
-    })
 
     /* Adding option to object option based on the object defined */
     var select = document.getElementById('object');
@@ -202,16 +199,14 @@ async function main() {
     var diffXTrans, diffYTrans, diffZTrans,
     diffXRot, diffYRot, diffZRot,
     diffXSca, diffYSca, diffZSca
-    var object = renderer.objects[1];
+    var object = renderer.objects;
     let xTrans,yTrans,zTrans,
     xRot, yRot, zRot,
     xScale, yScale, zScale;
     [xTrans, yTrans, zTrans] = object.getPosition();
     [xRot, yRot, zRot] = object.getRotation();
     [xScale, yScale, zScale] = object.getScale();
-    object.setPosition(parseFloat(transXSlider.value), parseFloat(transYSlider.value), parseFloat(transZSlider.value));
-    object.setRotation(parseFloat(rotXSlider.value), parseFloat(rotYSlider.value), parseFloat(rotZSlider.value));
-    object.setScale(parseFloat(scaXSlider.value), parseFloat(scaYSlider.value), parseFloat(scaZSlider.value));
+
     function render() {
         /* Get the input from option select */
         var selectedObjId = parseInt(select.value);
@@ -231,7 +226,7 @@ async function main() {
         // [x,y,z] = pyramid.getRotation();
         // pyramid.setRotation(x+0.5,y+0.5,z+0.5);
         
-        obj.setPosition(parseFloat(transXSlider.value), parseFloat(transYSlider.value), parseFloat(transZSlider.value));
+        obj.setPosition(xTrans+parseFloat(transXSlider.value), yTrans+parseFloat(transYSlider.value), zTrans+parseFloat(transZSlider.value));
         obj.setRotation(parseFloat(rotXSlider.value), parseFloat(rotYSlider.value), parseFloat(rotZSlider.value));
         obj.setScale(parseFloat(scaXSlider.value), parseFloat(scaYSlider.value), parseFloat(scaZSlider.value));
         
