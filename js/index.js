@@ -200,12 +200,27 @@ async function main() {
     diffXRot, diffYRot, diffZRot,
     diffXSca, diffYSca, diffZSca
     var object = renderer.objects;
-    let xTrans,yTrans,zTrans,
-    xRot, yRot, zRot,
-    xScale, yScale, zScale;
-    [xTrans, yTrans, zTrans] = object.getPosition();
-    [xRot, yRot, zRot] = object.getRotation();
-    [xScale, yScale, zScale] = object.getScale();
+    let xTrans = [],yTrans = [],zTrans = [],
+    xRot = [], yRot = [], zRot = [],
+    xScale = [], yScale = [], zScale = [];
+    
+    renderer.objects.forEach(obj => {
+        let tempXTrans, tempYTrans, tempZTrans,
+        tempXRot, tempYRot, tempZRot,
+        tempXScale,tempYScale, tempZScale;
+        [tempXTrans, tempYTrans, tempZTrans] = obj.getPosition();
+        [tempXRot, tempYRot, tempZRot] = obj.getRotation();
+        [tempXScale, tempYScale, tempZScale] = obj.getScale();
+        xTrans.push(tempXTrans);
+        yTrans.push(tempYTrans);
+        zTrans.push(tempZTrans);
+        xRot.push(tempXRot);
+        yRot.push(tempYRot);
+        zRot.push(tempZRot);
+        xScale.push(tempXScale);
+        yScale.push(tempYScale);
+        zScale.push(tempZScale);
+    })
 
     function render() {
         /* Get the input from option select */
@@ -226,7 +241,7 @@ async function main() {
         // [x,y,z] = pyramid.getRotation();
         // pyramid.setRotation(x+0.5,y+0.5,z+0.5);
         
-        obj.setPosition(xTrans+parseFloat(transXSlider.value), yTrans+parseFloat(transYSlider.value), zTrans+parseFloat(transZSlider.value));
+        obj.setPosition(xTrans[selectedObjId]+parseFloat(transXSlider.value), yTrans[selectedObjId]+parseFloat(transYSlider.value), zTrans[selectedObjId]+parseFloat(transZSlider.value));
         obj.setRotation(parseFloat(rotXSlider.value), parseFloat(rotYSlider.value), parseFloat(rotZSlider.value));
         obj.setScale(parseFloat(scaXSlider.value), parseFloat(scaYSlider.value), parseFloat(scaZSlider.value));
         
