@@ -291,8 +291,8 @@ export const pyramidGenerator = (back, right, front, left,
     ]);
     return [vertices, colors];
 }
-export function makePyramidEdges(program, gl, baseProjection) {
-    const obj1 = new GLObject(0, program, gl, gl.TRIANGLES);
+export function makePyramidEdges(id, program, gl, baseProjection) {
+    const obj1 = new GLObject(id, program, gl, gl.TRIANGLES);
     obj1.setBaseProjectionMatrix(baseProjection);
     let ver1, colors1;
     [ver1, colors1] = pyramidGenerator(
