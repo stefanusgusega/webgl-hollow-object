@@ -10,6 +10,8 @@ canvas.width = 800;
 canvas.height = 600;
 let gl = canvas.getContext('webgl2');
 var objId = 0;
+
+
 /* Setting max translation of each x, y, z */
 document.getElementById('transX').max = canvas.width;
 document.getElementById('transY').max = canvas.height;
@@ -187,10 +189,34 @@ async function main() {
         console.log(i);
     })
 
+    /* Adding option to object option based on the object defined */
+    var select = document.getElementById('object');
+    renderer.objects.forEach(i => {
+        var opt = document.createElement('option');
+        opt.text = i.id;
+        opt.value = i.id;
+        select.add(opt);
+    }) 
+
+    
     var diffXTrans, diffYTrans, diffZTrans,
     diffXRot, diffYRot, diffZRot,
     diffXSca, diffYSca, diffZSca
+    var object = renderer.objects[1];
+    let xTrans,yTrans,zTrans,
+    xRot, yRot, zRot,
+    xScale, yScale, zScale;
+    [xTrans, yTrans, zTrans] = object.getPosition();
+    [xRot, yRot, zRot] = object.getRotation();
+    [xScale, yScale, zScale] = object.getScale();
+    object.setPosition(parseFloat(transXSlider.value), parseFloat(transYSlider.value), parseFloat(transZSlider.value));
+    object.setRotation(parseFloat(rotXSlider.value), parseFloat(rotYSlider.value), parseFloat(rotZSlider.value));
+    object.setScale(parseFloat(scaXSlider.value), parseFloat(scaYSlider.value), parseFloat(scaZSlider.value));
     function render() {
+        /* Get the input from option select */
+        var selectedObjId = parseInt(select.value);
+        let obj = renderer.objects[selectedObjId];
+        // console.log(selectedObj);
         gl.clearColor(1, 1, 1, 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -204,23 +230,12 @@ async function main() {
         // cube.setRotation(x + 0.1, y + 1 , z);
         // [x,y,z] = pyramid.getRotation();
         // pyramid.setRotation(x+0.5,y+0.5,z+0.5);
+        
+        obj.setPosition(parseFloat(transXSlider.value), parseFloat(transYSlider.value), parseFloat(transZSlider.value));
+        obj.setRotation(parseFloat(rotXSlider.value), parseFloat(rotYSlider.value), parseFloat(rotZSlider.value));
+        obj.setScale(parseFloat(scaXSlider.value), parseFloat(scaYSlider.value), parseFloat(scaZSlider.value));
+        
         renderer.render();
-        renderer.objects.forEach(object => {
-            let xTrans,yTrans,zTrans,
-            xRot, yRot, zRot,
-            xScale, yScale, zScale;
-            [xTrans, yTrans, zTrans] = object.getPosition();
-            [xRot, yRot, zRot] = object.getRotation();
-            [xScale, yScale, zScale] = object.getScale();
-
-            object.setPosition(parseFloat(transXSlider.value), parseFloat(transYSlider.value), parseFloat(transZSlider.value));
-            object.setRotation(parseFloat(rotXSlider.value), parseFloat(rotYSlider.value), parseFloat(rotZSlider.value));
-            object.setScale(parseFloat(scaXSlider.value), parseFloat(scaYSlider.value), parseFloat(scaZSlider.value));
-
-            // console.log(yTrans)
-            
-            
-        })
         requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
