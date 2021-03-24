@@ -3,7 +3,7 @@ import GLObject from './objects/GLObject.js';
 import { makePyramidEdges } from './objects/Pyramid.js';
 import Renderer from './renderer.js';
 import { fGenerator, blockGenerator } from './utils/generator.js';
-import { orthographic } from './utils/projection.js';
+import { orthographic, perspective } from './utils/projection.js';
 
 let canvas = document.getElementById('canvas');
 canvas.width = 800;
@@ -127,7 +127,34 @@ async function main() {
     let top = 0;
     let near = 400;
     let far = -400;
-    let baseProjection = orthographic(left, right, bottom, top, near, far);
+    let aspect = right/bottom;
+    
+    /* Projection */
+    var proj = document.getElementById('proj');
+    /* For fov*/
+    var fovSlider = document.getElementById("fov");
+    var fovVal = document.getElementById("fovVal");
+    fovVal.innerHTML = fovSlider.value; // Display the default slider value
+    
+    // Update the current slider value (each time you drag the slider handle)
+    fovSlider.oninput = function() {
+      fovVal.innerHTML = this.value;
+    }
+    
+    var fov = parseInt(fovSlider.value);
+    console.log(fov);
+    let baseProjection;
+    if (proj.value === '0') {
+      baseProjection = orthographic(left, right, bottom, top, near, far);
+    }
+    else if (proj.value === '1') {
+      baseProjection = perspective(fov, aspect, near, far);
+    }
+    else if (proj.value === '2') {
+      baseProjection = orthographic(left, right, bottom, top, near, far);
+    }
+    
+    
     // Declare reusable variables
     let vertices, colors;
 
@@ -196,10 +223,10 @@ async function main() {
     }) 
 
     
-    var diffXTrans, diffYTrans, diffZTrans,
-    diffXRot, diffYRot, diffZRot,
-    diffXSca, diffYSca, diffZSca
-    var object = renderer.objects;
+    // var diffXTrans, diffYTrans, diffZTrans,
+    // diffXRot, diffYRot, diffZRot,
+    // diffXSca, diffYSca, diffZSca
+    // var object = renderer.objects;
     let xTrans = [],yTrans = [],zTrans = [],
     xRot = [], yRot = [], zRot = [],
     xScale = [], yScale = [], zScale = [];
@@ -226,6 +253,26 @@ async function main() {
         /* Get the input from option select */
         var selectedObjId = parseInt(select.value);
         let obj = renderer.objects[selectedObjId];
+        fov = parseInt(fovSlider.value);
+        renderer.objects.forEach(o => {
+          if (proj.value === '0') {
+            o.setBaseProjectionMatrix(orthographic(left, right, bottom, top, near, far));
+            // console.log(proj.value);
+          }
+          else if (proj.value === '1') {
+            o.setBaseProjectionMatrix(perspective(fov, aspect, near, far));
+            // console.log(proj.value);
+            
+          }
+          else if (proj.value === '2') {
+            o.setBaseProjectionMatrix(orthographic(left, right, bottom, top, near, far));
+            // console.log(proj.value);
+            
+            
+          }
+  
+        })
+        
         // console.log(selectedObj);
         gl.clearColor(1, 1, 1, 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -244,8 +291,9 @@ async function main() {
         obj.setPosition(xTrans[selectedObjId]+parseFloat(transXSlider.value), yTrans[selectedObjId]+parseFloat(transYSlider.value), zTrans[selectedObjId]+parseFloat(transZSlider.value));
         obj.setRotation(parseFloat(rotXSlider.value), parseFloat(rotYSlider.value), parseFloat(rotZSlider.value));
         obj.setScale(parseFloat(scaXSlider.value), parseFloat(scaYSlider.value), parseFloat(scaZSlider.value));
-        
+          
         renderer.render();
+        
         requestAnimationFrame(render);
     }
     requestAnimationFrame(render);

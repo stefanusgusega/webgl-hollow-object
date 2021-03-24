@@ -27,7 +27,26 @@
                         
                     </select>
                 </div>
+                <div class="p-half">
+                    <label for="proj">
+                        Choose projection:
+                    </label>
+                    <select id='proj'>
+                        <option value='0'>Orthographic</option>
+                        <option value='1'>Perspective</option>
+                        <option value='2'>Oblique</option>
+                    </select>
+                </div>
                 <div class="slidecontainer">
+                    <div class="p-half flex-container">
+                        <div class="flex-half">
+                            <label for="fov">Field of View:</label>
+                            <input type="range" min="1" max="179" value="60" class="slider" id="fov">
+                        </div>
+                        <div class="flex-half flex-container">
+                            Value: <p id="fovVal"></p>
+                        </div>
+                    </div>
                     <div class="p-half flex-container">
                         <div class="flex-half">
                             <label for="transX">Translate X:</label>
