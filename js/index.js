@@ -1,9 +1,11 @@
 import initShader from './loader/shaders.js';
 import GLObject from './objects/GLObject.js';
 import { makePyramidEdges } from './objects/Pyramid.js';
+import { cubeGenerator } from './objects/Cube.js';
 import Renderer from './renderer.js';
 import { fGenerator, blockGenerator } from './utils/generator.js';
 import { orthographic } from './utils/projection.js';
+import { cube2Generator } from './objects/CubeBackUp.js';
 
 let canvas = document.getElementById('canvas');
 canvas.width = 800;
@@ -34,7 +36,7 @@ async function main() {
     // Declare reusable variables
     let vertices, colors;
 
-    [vertices, colors] = fGenerator();
+    [vertices, colors] = cubeGenerator();
     const glObject = new GLObject(0, program, gl, gl.TRIANGLES);
     glObject.setBaseProjectionMatrix(baseProjection);
     glObject.setVertexArray(vertices);
@@ -43,16 +45,8 @@ async function main() {
     glObject.setRotation(40, 25, 325);
     glObject.setScale(1, 1, 1);
     glObject.bind();
-    
-    [vertices, colors] = blockGenerator(
-        50, 50, 50,
-        [200, 70, 120],
-        [80, 70, 200],
-        [255, 0, 0],
-        [70, 200, 210],
-        [200, 200, 70],
-        [160, 160, 220]
-    );
+
+    [vertices, colors] = cube2Generator();
     const glObject2 = new GLObject(0, program, gl, gl.TRIANGLES);
     glObject2.setBaseProjectionMatrix(baseProjection);
     glObject2.setVertexArray(vertices);
@@ -61,15 +55,9 @@ async function main() {
     glObject2.setRotation(90, 0, 0);
     glObject2.setScale(1, 1, 1);
     glObject2.bind();
-    
+
     [vertices, colors] = blockGenerator(
-        50, 50, 300,
-        [200, 70, 120],
-        [80, 70, 200],
-        [255, 0, 0],
-        [70, 200, 210],
-        [200, 200, 70],
-        [160, 160, 220]
+        50, 50, 300, [200, 70, 120], [80, 70, 200], [255, 0, 0], [70, 200, 210], [200, 200, 70], [160, 160, 220]
     );
     const cube = new GLObject(0, program, gl, gl.TRIANGLES);
     cube.setBaseProjectionMatrix(baseProjection);
@@ -82,13 +70,14 @@ async function main() {
 
     const renderer = new Renderer();
     const pyramid = makePyramidEdges(program, gl, baseProjection);
-    // renderer.addObject(glObject);
+    renderer.addObject(glObject);
     // renderer.addObject(glObject2);
     // renderer.addObject(cube);
     // renderer.objects.forEach(i => {
     //     console.log(i);
     // })
-    renderer.addObject(pyramid);
+    //renderer.addObject(pyramid);
+
     function render() {
         gl.clearColor(1, 1, 1, 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -98,11 +87,11 @@ async function main() {
         [x, y, z] = glObject.getRotation();
         glObject.setRotation(x + 1, y, z);
         [x, y, z] = glObject2.getRotation();
-        glObject2.setRotation(x, y + 1 , z );
+        glObject2.setRotation(x + 1, y + 1, z);
         [x, y, z] = cube.getRotation();
-        cube.setRotation(x + 0.1, y + 1 , z);
-        [x,y,z] = pyramid.getRotation();
-        pyramid.setRotation(x+0.5,y+0.5,z+0.5);
+        cube.setRotation(x + 0.1, y + 1, z);
+        [x, y, z] = pyramid.getRotation();
+        pyramid.setRotation(x + 0.5, y + 0.5, z + 0.5);
         renderer.render();
         requestAnimationFrame(render);
     }
