@@ -161,17 +161,17 @@ async function main() {
     glObject2.bind();
     
     [vertices, colors] = cylinderGenerator(
-        100, 100,
+        50, 50,
         [255, 0, 0],
         [0, 0, 255],
         [0, 255, 0]
     );
-    const cylinder = new GLObject(0, program, gl, gl.TRIANGLES);
+    const cylinder = new GLObject(objId++, program, gl, gl.TRIANGLES);
     cylinder.setBaseProjectionMatrix(baseProjection);
     cylinder.setVertexArray(vertices);
     cylinder.setColor(colors);
-    cylinder.setPosition(400, 400, 0);
-    cylinder.setRotation(0, 90, 0);
+    cylinder.setPosition(50, 50, 0);
+    cylinder.setRotation(60, 60, 0);
     cylinder.setScale(1, 1, 1);
     cylinder.bind();
 
@@ -195,13 +195,13 @@ async function main() {
 
     const renderer = new Renderer();
     const pyramid = makePyramidEdges(objId++, program, gl, baseProjection);
-    const pyramid2 = makePyramidEdges(objId++, program, gl, baseProjection);
+    // const pyramid2 = makePyramidEdges(objId++, program, gl, baseProjection);
     // renderer.addObject(glObject);
     // renderer.addObject(glObject2);
     // renderer.addObject(cube);
     renderer.addObject(pyramid);
-    renderer.addObject(pyramid2);
-    // renderer.addObject(cylinder);
+    // renderer.addObject(pyramid2);
+    renderer.addObject(cylinder);
 
     /* Adding option to object option based on the object defined */
     var select = document.getElementById('object');
@@ -210,39 +210,127 @@ async function main() {
         opt.text = i.id;
         opt.value = i.id;
         select.add(opt);
-    }) 
+    })
 
-    
-    var diffXTrans, diffYTrans, diffZTrans,
-    diffXRot, diffYRot, diffZRot,
-    diffXSca, diffYSca, diffZSca
-    var object = renderer.objects;
-    let xTrans = [],yTrans = [],zTrans = [],
-    xRot = [], yRot = [], zRot = [],
-    xScale = [], yScale = [], zScale = [];
-    
-    renderer.objects.forEach(obj => {
+    // EVENT CALLBACKS
+    const updateSlider = (id) => {
+        let obj = renderer.objects[id]
+
         let tempXTrans, tempYTrans, tempZTrans,
         tempXRot, tempYRot, tempZRot,
         tempXScale,tempYScale, tempZScale;
         [tempXTrans, tempYTrans, tempZTrans] = obj.getPosition();
         [tempXRot, tempYRot, tempZRot] = obj.getRotation();
         [tempXScale, tempYScale, tempZScale] = obj.getScale();
-        xTrans.push(tempXTrans);
-        yTrans.push(tempYTrans);
-        zTrans.push(tempZTrans);
-        xRot.push(tempXRot);
-        yRot.push(tempYRot);
-        zRot.push(tempZRot);
-        xScale.push(tempXScale);
-        yScale.push(tempYScale);
-        zScale.push(tempZScale);
+        // update trans slider
+        transXSlider.value = tempXTrans;
+        transXVal.innerHTML = transXSlider.value;
+        transYSlider.value = tempYTrans;
+        transYVal.innerHTML = transYSlider.value;
+        transZSlider.value = tempZTrans;
+        transZVal.innerHTML = transZSlider.value;
+        // update rot slider
+        rotXSlider.value = tempXRot;
+        rotXVal.innerHTML = rotXSlider.value;
+        rotYSlider.value = tempYRot;
+        rotYVal.innerHTML = rotYSlider.value;
+        rotZSlider.value = tempZRot;
+        rotZVal.innerHTML = rotZSlider.value;
+        // update scale slider
+        scaXSlider.value = tempXScale;
+        scaXVal.innerHTML = scaXSlider.value;
+        scaYSlider.value = tempYScale;
+        scaYVal.innerHTML = scaYSlider.value;
+        scaZSlider.value = tempZScale;
+        scaZVal.innerHTML = scaZSlider.value;
+    }
+    const updateObj = changeType => {
+        let id = select.value;
+        if (changeType == 'transX' || changeType == 'transY' || changeType == 'transZ') {
+            let x = transXSlider.value;
+            let y = transYSlider.value;
+            let z = transZSlider.value;
+            let obj = renderer.objects[id];
+            obj.setPosition(x, y, z);
+        } else if (changeType == 'rotX' || changeType == 'rotY' || changeType == 'rotZ') {
+            let x = rotXSlider.value;
+            let y = rotYSlider.value;
+            let z = rotZSlider.value;
+            let obj = renderer.objects[id];
+            obj.setRotation(x, y, z);
+        } else if (changeType == 'scaX' || changeType == 'scaY' || changeType == 'scaZ') {
+            let x = scaXSlider.value;
+            let y = scaYSlider.value;
+            let z = scaZSlider.value;
+            let obj = renderer.objects[id];
+            obj.setScale(x, y, z);
+        }
+    }
+    // EVENT LISTENERS
+    select.addEventListener('change', (e) => {
+        updateSlider(id)
     })
+    transXSlider.addEventListener('input', (e) => {
+        updateObj(e.target.id)
+    })
+    transYSlider.addEventListener('input', (e) => {
+        updateObj(e.target.id)
+    })
+    transZSlider.addEventListener('input', (e) => {
+        updateObj(e.target.id)
+    })
+    rotXSlider.addEventListener('input', (e) => {
+        updateObj(e.target.id)
+    })
+    rotYSlider.addEventListener('input', (e) => {
+        updateObj(e.target.id)
+    })
+    rotZSlider.addEventListener('input', (e) => {
+        updateObj(e.target.id)
+    })
+    scaXSlider.addEventListener('input', (e) => {
+        updateObj(e.target.id)
+    })
+    scaYSlider.addEventListener('input', (e) => {
+        updateObj(e.target.id)
+    })
+    scaZSlider.addEventListener('input', (e) => {
+        updateObj(e.target.id)
+    })
+
+    //update initial value
+    updateSlider(select.value)
+    
+    // var diffXTrans, diffYTrans, diffZTrans,
+    // diffXRot, diffYRot, diffZRot,
+    // diffXSca, diffYSca, diffZSca
+    // var object = renderer.objects;
+    // let xTrans = [],yTrans = [],zTrans = [],
+    // xRot = [], yRot = [], zRot = [],
+    // xScale = [], yScale = [], zScale = [];
+    
+    // renderer.objects.forEach(obj => {
+    //     let tempXTrans, tempYTrans, tempZTrans,
+    //     tempXRot, tempYRot, tempZRot,
+    //     tempXScale,tempYScale, tempZScale;
+    //     [tempXTrans, tempYTrans, tempZTrans] = obj.getPosition();
+    //     [tempXRot, tempYRot, tempZRot] = obj.getRotation();
+    //     [tempXScale, tempYScale, tempZScale] = obj.getScale();
+    //     xTrans.push(tempXTrans);
+    //     yTrans.push(tempYTrans);
+    //     zTrans.push(tempZTrans);
+    //     xRot.push(tempXRot);
+    //     yRot.push(tempYRot);
+    //     zRot.push(tempZRot);
+    //     xScale.push(tempXScale);
+    //     yScale.push(tempYScale);
+    //     zScale.push(tempZScale);
+    // })
 
     function render() {
         /* Get the input from option select */
-        var selectedObjId = parseInt(select.value);
-        let obj = renderer.objects[selectedObjId];
+        // var selectedObjId = parseInt(select.value);
+        // let obj = renderer.objects[selectedObjId];
         // console.log(selectedObj);
         gl.clearColor(1, 1, 1, 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -258,9 +346,9 @@ async function main() {
         // [x,y,z] = pyramid.getRotation();
         // pyramid.setRotation(x+0.5,y+0.5,z+0.5);
         
-        obj.setPosition(xTrans[selectedObjId]+parseFloat(transXSlider.value), yTrans[selectedObjId]+parseFloat(transYSlider.value), zTrans[selectedObjId]+parseFloat(transZSlider.value));
-        obj.setRotation(parseFloat(rotXSlider.value), parseFloat(rotYSlider.value), parseFloat(rotZSlider.value));
-        obj.setScale(parseFloat(scaXSlider.value), parseFloat(scaYSlider.value), parseFloat(scaZSlider.value));
+        // obj.setPosition(xTrans[selectedObjId]+parseFloat(transXSlider.value), yTrans[selectedObjId]+parseFloat(transYSlider.value), zTrans[selectedObjId]+parseFloat(transZSlider.value));
+        // obj.setRotation(parseFloat(rotXSlider.value), parseFloat(rotYSlider.value), parseFloat(rotZSlider.value));
+        // obj.setScale(parseFloat(scaXSlider.value), parseFloat(scaYSlider.value), parseFloat(scaZSlider.value));
         
         renderer.render();
         requestAnimationFrame(render);
