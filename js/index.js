@@ -18,7 +18,7 @@ document.getElementById('transY').max = canvas.height;
 document.getElementById('transZ').max = (canvas.width + canvas.height) / 2;
 document.getElementById('camTransX').max = canvas.width;
 document.getElementById('camTransY').max = canvas.height;
-document.getElementById('camTransZ').max = (canvas.width + canvas.height) / 2;
+document.getElementById('camTransZ').max = 2000;
 
 var resetCameraButton = document.getElementById("reset");
 
