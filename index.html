@@ -19,6 +19,16 @@
                 </div>
             </div>
             <div class="flex-right">
+                <div class="p-half flex-container">
+                    <div class="flex-one-third">
+                        <a id="saveBtn" class="btn">Save</a>
+                        <button id="resetBtn" class="btn">
+                            Reset to Default
+                        </button> 
+                        <input type="file" id="fileSelect" class="btn" />
+                        <button id="loadBtn" class="btn">Load</button>
+                    </div>
+                </div>
                 <div class="p-half">
                     <label for="object">
                         Choose object:
@@ -185,6 +195,21 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div id="helpSec" class="help">
+            <h3>Cara menggunakan program:</h3>
+            1. Untuk memilih objek yang akan diajak interaksi maka klik
+            dropdown "Choose object", lalu pilih antara cube, pyramid, atau cylinder. <br>
+            2. Untuk memilih tipe proyeksi, maka pilih pada dropdown "Choose projection",
+            dan pilih tipe proyeksi kesukaan Anda. <br>
+            3. Field of View hanya berfungsi pada tipe proyeksi <b>perspektif</b> saja.<br>
+            4. Semua objek bisa ditranslasi, dirotasi, dan didilatasi dengan menggunakan slider yang disediakan.<br>
+            5. Jika hendak menyimpan, klik <b>Save</b>, dan simpan.<br>
+            6. Jika ingin load data objek, pilih file yang akan diload lalu klik <b>Load</b>, dan pastikan file bertipe <i>.json</i>
+            dan di-generate oleh program kami.<br>
+            7. Untuk reset tampilan menjadi awal program dimulai, klik <b>Reset to Default</b>.
+
+
         </div>
     </div>
     <script type="module" src="js/index.js"></script>

@@ -39,10 +39,31 @@
     flex: 35%;
 }
 
+.flex-one-third {
+    flex: 33%;
+}
+
 .flex-half {
     flex: 50%;
 }
 
 .slidecontainer {
   width: 100%; /* Width of the outside container */
+}
+
+.btn {
+    background-color: purple;
+    cursor: pointer;
+    color: white;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    font-size:16px;
+    
+    
+}
+
+.help {
+    background-color:lightgrey;
+    padding: 1rem;
+    
 }

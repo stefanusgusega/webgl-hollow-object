@@ -4,7 +4,7 @@ import { cubeGenerator } from './objects/Cube.js';
 import { makePyramidEdges } from './objects/Pyramid.js';
 import Renderer from './renderer.js';
 import { cylinderGenerator } from './objects/cylinder.js'
-import { oblique, orthographic, perspective, CABINET_PROJECTION_ANGLE } from './utils/projection.js';
+import { orthographic, perspective } from './utils/projection.js';
 
 let canvas = document.getElementById('canvas');
 canvas.width = 800;
@@ -252,6 +252,27 @@ async function main() {
     renderer.addObject(cube);
     renderer.addObject(pyramid);
     renderer.addObject(cylinder);
+    
+    console.log(renderer.objects);
+    // default view
+    var arrObjDef = [];
+    var cubeDef = cube;
+    var pyramidDef = pyramid;
+    var cylinderDef = cylinder;
+    arrObjDef.push(cubeDef);
+    arrObjDef.push(pyramidDef);
+    arrObjDef.push(cylinderDef);
+
+    const defaultView = () => {
+      renderer.removeObject(0);
+      renderer.removeObject(1);
+      renderer.removeObject(2);
+      renderer.addObject(cube);
+      renderer.addObject(pyramid);
+      renderer.addObject(cylinder);
+      console.log(renderer.objects);
+    }
+
 
     /* Adding option to object option based on the object defined */
     var select = document.getElementById('object');
@@ -262,7 +283,99 @@ async function main() {
         select.add(opt);
     })
 
+    // save
+    const save = (el) => {
+      let str = "";
+      let arr = [];
+      renderer.objects.forEach(obj => {
+        arr.push(obj.toSaveData());
+      });
+      str = JSON.stringify(arr);
+      var data="text/json;charset=utf-8,"+encodeURIComponent(str);
+      el.setAttribute("href", "data:"+data);
+      el.setAttribute("download","data.json");
+
+    }
+
+    
+
+    const load = (data) => {
+      let x,y,z;
+      data.forEach(obj => {
+        if (obj.name === 'cube') {
+          const cube = new GLObject(0, 'cube', program, gl, gl.TRIANGLES);
+          [vertices, colors] = cubeGenerator();
+          cube.setBaseProjectionMatrix(obj.projMatrix);
+          cube.setVertexArray(vertices);
+          cube.setColor(obj.color);
+          [x, y, z] = obj.position;
+          cube.setPosition(x,y,z);
+          [x, y, z] = obj.rot;
+          cube.setRotation(x, y, z);
+          [x, y, z] = obj.scale;
+          cube.setScale(x, y, z);
+          cube.bind();
+          renderer.removeObject(0);
+          renderer.addObject(cube);
+        }
+        else if (obj.name === 'pyramid') {
+          const pyramid = makePyramidEdges(1, program, gl, obj.projMatrix);
+          pyramid.setColor(obj.color);
+          [x, y, z] = obj.position;
+          pyramid.setPosition(x,y,z);
+          [x, y, z] = obj.rot;
+          pyramid.setRotation(x, y, z);
+          [x, y, z] = obj.scale;
+          pyramid.setScale(x, y, z);
+          // pyramid.bind();
+          renderer.removeObject(1);
+          renderer.addObject(pyramid);
+        }
+        else if (obj.name === 'cylinder') {
+          const cylinder = new GLObject(2, 'cylinder', program, gl, gl.TRIANGLES);
+          [vertices, colors] = cylinderGenerator(
+            75, 75,
+            [255, 0, 0],
+            [0, 0, 255],
+            [0, 255, 0]
+          );
+          cylinder.setBaseProjectionMatrix(obj.projMatrix);
+          cylinder.setVertexArray(vertices);
+          cylinder.setColor(obj.color);
+          [x, y, z] = obj.position;
+          cylinder.setPosition(x,y,z);
+          [x, y, z] = obj.rot;
+          cylinder.setRotation(x, y, z);
+          [x, y, z] = obj.scale;
+          cylinder.setScale(x, y, z);
+          cylinder.bind();
+          renderer.removeObject(2);
+          renderer.addObject(cylinder);
+        }
+      })
+    }
+
+    const loadBtn = document.getElementById("loadBtn")
+    const fileSelector = document.getElementById("fileSelect")
+    const resetBtn = document.getElementById('resetBtn');
+    var saveBtn = document.getElementById('saveBtn');
     // EVENT CALLBACKS
+    resetBtn.onclick = () => {
+      defaultView();
+    }
+    saveBtn.onclick = () => {
+      save(saveBtn);
+    }
+    loadBtn.onclick = () => {
+      var files = fileSelector.files;
+      var fr = new FileReader();
+      fr.readAsText(files.item(0));
+      fr.onload = (e) => {
+          var res = JSON.parse(e.target.result);
+          console.log(res);
+          load(res);
+      }
+    }
     const updateSlider = (id) => {
         let obj = renderer.objects[id]
 
