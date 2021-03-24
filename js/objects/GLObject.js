@@ -59,6 +59,11 @@ class GLObject {
         this.indices = indices
     }
 
+    setViewProjectionMat(viewProjMat) {
+        this.viewProjectionMat = viewProjMat
+        this.projectionMat = this.getProjectionMatrix()
+    }
+
     getProjectionMatrix() {
         if (this.base === undefined || this.pos === undefined || this.rot === undefined || this.scale === undefined) return null
         // Get translation matrix
@@ -107,7 +112,12 @@ class GLObject {
             0,  0, k3,  0,
             0,  0,  0,  1,
         ]
-        const projectionMat = mmult(mmult(mmult(rotationMat, scaleMat), translateMat), this.base)
+        let projectionMat
+        if (this.viewProjectionMat) {
+            projectionMat = mmult(mmult(mmult(mmult(rotationMat, scaleMat), translateMat), this.viewProjectionMat), this.base)
+        } else {
+            projectionMat = mmult(mmult(mmult(rotationMat, scaleMat), translateMat), this.base)
+        }
         return projectionMat
     }
 

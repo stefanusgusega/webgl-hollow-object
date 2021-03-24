@@ -140,8 +140,8 @@ async function main() {
         let right = gl.canvas.clientWidth;
         let bottom = gl.canvas.clientHeight;
         let top = 0;
-        let near = 400;
-        let far = -400;
+        let near = 800;
+        let far = -800;
         baseProjection = orthographic(left, right, bottom, top, near, far);
     }
     else if (proj.value === '1') {
@@ -151,7 +151,7 @@ async function main() {
         }
         var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
         var zNear = 1;
-        var zFar = 2000;
+        var zFar = 5000;
         baseProjection = perspective(deg2rad(fov), aspect, zNear, zFar);
     }
     else if (proj.value === '2') {
@@ -160,8 +160,8 @@ async function main() {
         let right = gl.canvas.clientWidth;
         let bottom = gl.canvas.clientHeight;
         let top = 0;
-        let near = 400;
-        let far = -400;
+        let near = 800;
+        let far = -800;
         baseProjection = orthographic(left, right, bottom, top, near, far);
     }
     
@@ -273,9 +273,10 @@ async function main() {
             let right = gl.canvas.clientWidth;
             let bottom = gl.canvas.clientHeight;
             let top = 0;
-            let near = 400;
-            let far = -400;
+            let near = 800;
+            let far = -800;
             baseProjection = orthographic(left, right, bottom, top, near, far);
+            renderer.setCameraPosition(0, 0, 0);
             renderer.objects.forEach(obj => {
                 let [x, y, z] = obj.getPosition();
                 if (z < -100) {
@@ -291,7 +292,7 @@ async function main() {
             }
             var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
             var zNear = 1;
-            var zFar = 2000;
+            var zFar = 5000;
             baseProjection = perspective(deg2rad(fov), aspect, zNear, zFar);
             renderer.objects.forEach(obj => {
                 let [x, y, z] = obj.getPosition();
@@ -307,12 +308,11 @@ async function main() {
             let right = gl.canvas.clientWidth;
             let bottom = gl.canvas.clientHeight;
             let top = 0;
-            let near = 400;
-            let far = -400;
+            let near = 800;
+            let far = -800;
             baseProjection = oblique(left, right, bottom, top, near, far, CABINET_PROJECTION_ANGLE);
+            renderer.setCameraPosition(0, 0, 0);
         }
-        console.log(fovSlider.value)
-        console.log(baseProjection)
         renderer.changeProjection(baseProjection);
     }
     // EVENT LISTENERS
@@ -361,6 +361,11 @@ async function main() {
         gl.clearColor(1, 1, 1, 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+        let [tx, ty, tz] = renderer.getCameraPosition()
+        renderer.setCameraPosition(tx, ty, tz+1)
+        let [x, y, z] = renderer.getCameraAngle()
+        renderer.setCameraAngle(x, y+1, z)
         
         renderer.render();
         
