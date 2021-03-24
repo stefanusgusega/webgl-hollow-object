@@ -276,6 +276,13 @@ async function main() {
             let near = 400;
             let far = -400;
             baseProjection = orthographic(left, right, bottom, top, near, far);
+            renderer.objects.forEach(obj => {
+                let [x, y, z] = obj.getPosition();
+                if (z < -100) {
+                    obj.setPosition(x, y, 0);
+                    updateSlider(obj.id);
+                }
+            })
         }
         else if (val === '1') {
             // set base perspective matrix
@@ -286,6 +293,13 @@ async function main() {
             var zNear = 1;
             var zFar = 2000;
             baseProjection = perspective(deg2rad(fov), aspect, zNear, zFar);
+            renderer.objects.forEach(obj => {
+                let [x, y, z] = obj.getPosition();
+                if (z > -100) {
+                    obj.setPosition(x, y, -600);
+                    updateSlider(obj.id);
+                }
+            })
         }
         else if (val === '2') {
             // Set base orthographic projection matrix
@@ -297,6 +311,8 @@ async function main() {
             let far = -400;
             baseProjection = orthographic(left, right, bottom, top, near, far);
         }
+        console.log(fovSlider.value)
+        console.log(baseProjection)
         renderer.changeProjection(baseProjection);
     }
     // EVENT LISTENERS
@@ -305,6 +321,9 @@ async function main() {
     })
     proj.addEventListener('change', (e) => {
         updateProjection(e.target.value)
+    })
+    fovSlider.addEventListener('input', (e) => {
+        updateProjection(proj.value)
     })
     transXSlider.addEventListener('input', (e) => {
         updateObj(e.target.id)
