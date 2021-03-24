@@ -1,3 +1,7 @@
+import { mmult } from './matrix.js'
+
+export const CABINET_PROJECTION_ANGLE = 63.4;
+
 export function orthographic(left, right, bottom, top, near, far) {
     return [
         2 / (right - left), 0, 0, 0,
@@ -21,4 +25,17 @@ export function perspective(fov, aspect, near, far) {
       0, 0, (near + far) * rangeInv, -1,
       0, 0, near * far * rangeInv * 2, 0
     ];
+}
+
+export function oblique(left, right, bottom, top, near, far, angle) {
+    const s = 0.5 * Math.sin(angle)
+    const c = 0.5 * Math.cos(angle)
+    const shearMat = [
+        1, 0, 0, s,
+        0, 1, 0, c,
+        0, 0, 1, 0,
+        0, 0, 0, 1,
+    ]
+    const orthographicMat = orthographic(left, right, bottom, top, near, far)
+    return mmult(orthographicMat, shearMat)
 }

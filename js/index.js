@@ -4,7 +4,7 @@ import { cubeGenerator } from './objects/Cube.js';
 import { makePyramidEdges } from './objects/Pyramid.js';
 import Renderer from './renderer.js';
 import { cylinderGenerator } from './objects/cylinder.js'
-import { orthographic, perspective } from './utils/projection.js';
+import { oblique, orthographic, perspective, CABINET_PROJECTION_ANGLE } from './utils/projection.js';
 
 let canvas = document.getElementById('canvas');
 canvas.width = 800;
@@ -309,7 +309,7 @@ async function main() {
             let top = 0;
             let near = 400;
             let far = -400;
-            baseProjection = orthographic(left, right, bottom, top, near, far);
+            baseProjection = oblique(left, right, bottom, top, near, far, CABINET_PROJECTION_ANGLE);
         }
         console.log(fovSlider.value)
         console.log(baseProjection)
