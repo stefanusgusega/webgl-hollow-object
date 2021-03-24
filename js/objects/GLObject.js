@@ -162,6 +162,18 @@ class GLObject {
             gl.drawArrays(this.primitiveType, this.offset, this.n)
         }
     }
+
+    toSaveData() {
+        const data = {
+            name:this.name,
+            color:this.ca,
+            position:this.pos,
+            rot:this.rot,
+            scale:this.scale,
+            projMatrix:this.projectionMat
+        }
+        return data;
+    }
 }
 
 export default GLObject
