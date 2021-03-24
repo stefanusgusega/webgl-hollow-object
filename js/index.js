@@ -5,7 +5,6 @@ import { cubeGenerator } from './objects/Cube.js';
 import Renderer from './renderer.js';
 import { fGenerator, blockGenerator } from './utils/generator.js';
 import { orthographic } from './utils/projection.js';
-import { cube2Generator } from './objects/CubeBackUp.js';
 
 let canvas = document.getElementById('canvas');
 canvas.width = 800;
