@@ -264,13 +264,40 @@ async function main() {
     arrObjDef.push(cylinderDef);
 
     const defaultView = () => {
-      renderer.removeObject(0);
-      renderer.removeObject(1);
-      renderer.removeObject(2);
-      renderer.addObject(cube);
-      renderer.addObject(pyramid);
-      renderer.addObject(cylinder);
-      console.log(renderer.objects);
+      [vertices, colors] = cylinderGenerator(
+        75, 75,
+        [255, 0, 0],
+        [0, 0, 255],
+        [0, 255, 0]
+      );
+      cylinder.setBaseProjectionMatrix(baseProjection);
+      cylinder.setVertexArray(vertices);
+      cylinder.setColor(colors);
+      cylinder.setPosition(50, 50, 0);
+      cylinder.setRotation(60, 60, 0);
+      cylinder.setScale(1, 1, 1);
+      cylinder.bind();
+
+      [vertices, colors] = cubeGenerator();
+      // const cube = new GLObject(0, 'cube', program, gl, gl.TRIANGLES);
+      cube.setBaseProjectionMatrix(baseProjection);
+      cube.setVertexArray(vertices);
+      cube.setColor(colors);
+      cube.setPosition(45, 150, 0);
+      cube.setRotation(40, 25, 325);
+      cube.setScale(1, 1, 1);
+      cube.bind();
+
+      pyramid.setBaseProjectionMatrix(baseProjection);
+      pyramid.setVertexArray(ver1);
+      pyramid.setColor(colors1);
+      pyramid.setPosition(200,300,0);
+      pyramid.setRotation(0,0,0);
+      pyramid.setScale(2,2,2);
+      pyramid.bind();
+
+      
+
     }
 
 
