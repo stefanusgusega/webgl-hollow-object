@@ -4,7 +4,7 @@ import { makePyramidEdges } from './objects/Pyramid.js';
 import Renderer from './renderer.js';
 import { fGenerator, blockGenerator } from './utils/generator.js';
 import { cylinderGenerator } from './objects/cylinder.js'
-import { orthographic } from './utils/projection.js';
+import { orthographic, perspective } from './utils/projection.js';
 
 let canvas = document.getElementById('canvas');
 canvas.width = 800;
@@ -121,45 +121,55 @@ async function main() {
     gl.enable(gl.CULL_FACE);
     gl.enable(gl.DEPTH_TEST);
 
-    // Set base orthographic projection matrix
-    let left = 0;
-    let right = gl.canvas.clientWidth;
-    let bottom = gl.canvas.clientHeight;
-    let top = 0;
-    let near = 400;
-    let far = -400;
-    let baseProjection = orthographic(left, right, bottom, top, near, far);
+    /* Projection */
+    var proj = document.getElementById('proj');
+    /* For fov*/
+    var fovSlider = document.getElementById("fov");
+    var fovVal = document.getElementById("fovVal");
+    fovVal.innerHTML = fovSlider.value; // Display the default slider value
+    
+    // Update the current slider value (each time you drag the slider handle)
+    fovSlider.oninput = function() {
+      fovVal.innerHTML = this.value;
+    }
+    
+    var fov = parseInt(fovSlider.value);
+    let baseProjection;
+    if (proj.value === '0') {
+        // Set base orthographic projection matrix
+        let left = 0;
+        let right = gl.canvas.clientWidth;
+        let bottom = gl.canvas.clientHeight;
+        let top = 0;
+        let near = 400;
+        let far = -400;
+        baseProjection = orthographic(left, right, bottom, top, near, far);
+    }
+    else if (proj.value === '1') {
+        // set base perspective matrix
+        function deg2rad(degrees) {
+            return degrees * Math.PI / 180
+        }
+        var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+        var zNear = 1;
+        var zFar = 2000;
+        baseProjection = perspective(deg2rad(fov), aspect, zNear, zFar);
+    }
+    else if (proj.value === '2') {
+        // Set base orthographic projection matrix
+        let left = 0;
+        let right = gl.canvas.clientWidth;
+        let bottom = gl.canvas.clientHeight;
+        let top = 0;
+        let near = 400;
+        let far = -400;
+        baseProjection = orthographic(left, right, bottom, top, near, far);
+    }
+    
+    
     // Declare reusable variables
     let vertices, colors;
 
-    [vertices, colors] = fGenerator();
-    const glObject = new GLObject(0, program, gl, gl.TRIANGLES);
-    glObject.setBaseProjectionMatrix(baseProjection);
-    glObject.setVertexArray(vertices);
-    glObject.setColor(colors);
-    glObject.setPosition(45, 150, 0);
-    glObject.setRotation(40, 25, 325);
-    glObject.setScale(1, 1, 1);
-    glObject.bind();
-    
-    [vertices, colors] = blockGenerator(
-        50, 50, 50,
-        [200, 70, 120],
-        [80, 70, 200],
-        [255, 0, 0],
-        [70, 200, 210],
-        [200, 200, 70],
-        [160, 160, 220]
-    );
-    const glObject2 = new GLObject(0, program, gl, gl.TRIANGLES);
-    glObject2.setBaseProjectionMatrix(baseProjection);
-    glObject2.setVertexArray(vertices);
-    glObject2.setColor(colors);
-    glObject2.setPosition(300, 200, 0);
-    glObject2.setRotation(90, 0, 0);
-    glObject2.setScale(1, 1, 1);
-    glObject2.bind();
-    
     [vertices, colors] = cylinderGenerator(
         50, 50,
         [255, 0, 0],
@@ -174,24 +184,6 @@ async function main() {
     cylinder.setRotation(60, 60, 0);
     cylinder.setScale(1, 1, 1);
     cylinder.bind();
-
-    [vertices, colors] = blockGenerator(
-        50, 50, 300,
-        [200, 70, 120],
-        [80, 70, 200],
-        [255, 0, 0],
-        [70, 200, 210],
-        [200, 200, 70],
-        [160, 160, 220]
-    );
-    const cube = new GLObject(0, program, gl, gl.TRIANGLES);
-    cube.setBaseProjectionMatrix(baseProjection);
-    cube.setVertexArray(vertices);
-    cube.setColor(colors);
-    cube.setPosition(200, 200, 0);
-    cube.setRotation(0, 90, 0);
-    cube.setScale(1, 1, 1);
-    cube.bind();
 
     const renderer = new Renderer();
     const pyramid = makePyramidEdges(objId++, program, gl, baseProjection);
@@ -266,9 +258,47 @@ async function main() {
             obj.setScale(x, y, z);
         }
     }
+    const updateProjection = val => {
+        var fov = parseInt(fovSlider.value);
+        let baseProjection;
+        if (val === '0') {
+            // Set base orthographic projection matrix
+            let left = 0;
+            let right = gl.canvas.clientWidth;
+            let bottom = gl.canvas.clientHeight;
+            let top = 0;
+            let near = 400;
+            let far = -400;
+            baseProjection = orthographic(left, right, bottom, top, near, far);
+        }
+        else if (val === '1') {
+            // set base perspective matrix
+            function deg2rad(degrees) {
+                return degrees * Math.PI / 180
+            }
+            var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+            var zNear = 1;
+            var zFar = 2000;
+            baseProjection = perspective(deg2rad(fov), aspect, zNear, zFar);
+        }
+        else if (val === '2') {
+            // Set base orthographic projection matrix
+            let left = 0;
+            let right = gl.canvas.clientWidth;
+            let bottom = gl.canvas.clientHeight;
+            let top = 0;
+            let near = 400;
+            let far = -400;
+            baseProjection = orthographic(left, right, bottom, top, near, far);
+        }
+        renderer.changeProjection(baseProjection);
+    }
     // EVENT LISTENERS
     select.addEventListener('change', (e) => {
-        updateSlider(id)
+        updateSlider(e.target.value)
+    })
+    proj.addEventListener('change', (e) => {
+        updateProjection(e.target.value)
     })
     transXSlider.addEventListener('input', (e) => {
         updateObj(e.target.id)
@@ -331,6 +361,26 @@ async function main() {
         /* Get the input from option select */
         // var selectedObjId = parseInt(select.value);
         // let obj = renderer.objects[selectedObjId];
+        // fov = parseInt(fovSlider.value);
+        // renderer.objects.forEach(o => {
+        //   if (proj.value === '0') {
+        //     o.setBaseProjectionMatrix(orthographic(left, right, bottom, top, near, far));
+        //     // console.log(proj.value);
+        //   }
+        //   else if (proj.value === '1') {
+        //     o.setBaseProjectionMatrix(perspective(fov, aspect, near, far));
+        //     // console.log(proj.value);
+            
+        //   }
+        //   else if (proj.value === '2') {
+        //     o.setBaseProjectionMatrix(orthographic(left, right, bottom, top, near, far));
+        //     // console.log(proj.value);
+            
+            
+        //   }
+  
+        // })
+        
         // console.log(selectedObj);
         gl.clearColor(1, 1, 1, 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -351,6 +401,7 @@ async function main() {
         // obj.setScale(parseFloat(scaXSlider.value), parseFloat(scaYSlider.value), parseFloat(scaZSlider.value));
         
         renderer.render();
+        
         requestAnimationFrame(render);
     }
     requestAnimationFrame(render);

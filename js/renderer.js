@@ -15,6 +15,12 @@ class Renderer {
         this.count--
     }
 
+    changeProjection(projectionMat) {
+        for (const obj of this.objects) {
+            obj.setBaseProjectionMatrix(projectionMat);
+        }
+    }
+
     render() {
         for (const obj of this.objects) {
             obj.draw()
