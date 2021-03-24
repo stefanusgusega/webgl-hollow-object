@@ -1,8 +1,9 @@
 import initShader from './loader/shaders.js';
 import GLObject from './objects/GLObject.js';
+import { makePyramidEdges } from './objects/Pyramid.js';
 import Renderer from './renderer.js';
 import { fGenerator, blockGenerator } from './utils/generator.js';
-import { donut } from './objects/donut.js'
+import { cylinderGenerator } from './objects/cylinder.js'
 import { orthographic } from './utils/projection.js';
 
 let canvas = document.getElementById('canvas');
@@ -20,7 +21,7 @@ async function main() {
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    // gl.enable(gl.CULL_FACE);
+    gl.enable(gl.CULL_FACE);
     gl.enable(gl.DEPTH_TEST);
 
     // Set base orthographic projection matrix
@@ -57,27 +58,56 @@ async function main() {
     glObject2.setBaseProjectionMatrix(baseProjection);
     glObject2.setVertexArray(vertices);
     glObject2.setColor(colors);
-    glObject2.setPosition(300, 350, 0);
-    glObject2.setRotation(60, 60, 60);
+    glObject2.setPosition(300, 200, 0);
+    glObject2.setRotation(90, 0, 0);
     glObject2.setScale(1, 1, 1);
     glObject2.bind();
     
-    [vertices, colors] = donut(
-        3600, 25, 25, 100
+    [vertices, colors] = cylinderGenerator(
+        100, 100,
+        [255, 0, 0],
+        [0, 0, 255],
+        [0, 255, 0]
     );
-    const torus = new GLObject(0, program, gl, gl.TRIANGLES);
-    torus.setBaseProjectionMatrix(baseProjection);
-    torus.setVertexArray(vertices);
-    torus.setColor(colors);
-    torus.setPosition(400, 400, 0);
-    torus.setRotation(0, 90, 0);
-    torus.setScale(1, 1, 1);
-    torus.bind();
+    const cylinder = new GLObject(0, program, gl, gl.TRIANGLES);
+    cylinder.setBaseProjectionMatrix(baseProjection);
+    cylinder.setVertexArray(vertices);
+    cylinder.setColor(colors);
+    cylinder.setPosition(400, 400, 0);
+    cylinder.setRotation(0, 90, 0);
+    cylinder.setScale(1, 1, 1);
+    cylinder.bind();
 
+    [vertices, colors] = blockGenerator(
+        50, 50, 300,
+        [200, 70, 120],
+        [80, 70, 200],
+        [255, 0, 0],
+        [70, 200, 210],
+        [200, 200, 70],
+        [160, 160, 220]
+    );
+    const cube = new GLObject(0, program, gl, gl.TRIANGLES);
+    cube.setBaseProjectionMatrix(baseProjection);
+    cube.setVertexArray(vertices);
+    cube.setColor(colors);
+    cube.setPosition(200, 200, 0);
+    cube.setRotation(0, 90, 0);
+    cube.setScale(1, 1, 1);
+    cube.bind();
+
+    const pyramid = makePyramidEdges(program, gl, baseProjection);
+    // renderer.addObject(glObject);
+    // renderer.addObject(glObject2);
+    // renderer.addObject(cube);
+    // renderer.objects.forEach(i => {
+        //     console.log(i);
+        // })
     const renderer = new Renderer();
     renderer.addObject(glObject);
     renderer.addObject(glObject2);
-    renderer.addObject(torus);
+    renderer.addObject(cylinder);
+    renderer.addObject(pyramid);
     function render() {
         gl.clearColor(1, 1, 1, 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -88,9 +118,12 @@ async function main() {
         glObject.setRotation(x + 1, y, z);
         [x, y, z] = glObject2.getRotation();
         glObject2.setRotation(x + 0.5, y + 1, z + 2);
-        [x, y, z] = torus.getRotation();
-        torus.setRotation(x + 0.1, y + 1 , z);
-
+        [x, y, z] = cylinder.getRotation();
+        cylinder.setRotation(x + 0.1, y + 1 , z + 0.5);
+        [x, y, z] = cube.getRotation();
+        cube.setRotation(x + 0.1, y + 1 , z);
+        [x,y,z] = pyramid.getRotation();
+        pyramid.setRotation(x+0.5,y+0.5,z+0.5);
         renderer.render();
         requestAnimationFrame(render);
     }

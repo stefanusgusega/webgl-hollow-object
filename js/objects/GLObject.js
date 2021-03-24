@@ -54,6 +54,10 @@ class GLObject {
         this.ca
     }
 
+    setIndices(indices) {
+        this.indices = indices
+    }
+
     getProjectionMatrix() {
         if (this.base === undefined || this.pos === undefined || this.rot === undefined || this.scale === undefined) return null
         // Get translation matrix
@@ -116,6 +120,11 @@ class GLObject {
         this.colorBuffer = gl.createBuffer()
         gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer)
         gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(this.ca), gl.STATIC_DRAW)
+        if (this.indices) {
+            this.indexBuffer = gl.createBuffer()
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer)
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), gl.STATIC_DRAW)
+        }
     }
 
     draw() {
@@ -136,7 +145,11 @@ class GLObject {
         // Set projection matrix
         gl.uniformMatrix4fv(matrixLocation, false, this.projectionMat)
         // Draw
-        gl.drawArrays(this.primitiveType, this.offset, this.n)
+        if (this.indices) {
+            gl.drawElements(this.primitiveType, this.n, gl.UNSIGNED_SHORT, this.offset)   
+        } else {
+            gl.drawArrays(this.primitiveType, this.offset, this.n)
+        }
     }
 }
 

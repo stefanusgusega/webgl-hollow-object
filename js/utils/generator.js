@@ -1,4 +1,4 @@
-const _generateColors = choosenColors => {
+export const _generateColors = choosenColors => {
     let colors = []
     for (let i = 0; i < choosenColors.length; i++)
         for (let j = 0; j < 6; j++)
@@ -8,7 +8,7 @@ const _generateColors = choosenColors => {
 
 export const blockGenerator = (p, l, t, front, back, upper, bottom, right, left) => {
     // Using gl.TRIANGLES
-    const vfront = [
+    const vback = [
         0, 0, 0,
         0, t, 0,
         p, 0, 0,
@@ -16,7 +16,7 @@ export const blockGenerator = (p, l, t, front, back, upper, bottom, right, left)
         p, t, 0,
         p, 0, 0
     ]
-    const vback = [
+    const vfront = [
         0, 0, l,
         p, 0, l,
         0, t, l,
@@ -24,7 +24,7 @@ export const blockGenerator = (p, l, t, front, back, upper, bottom, right, left)
         p, t, l,
         0, t, l
     ]
-    const vupper = [
+    const vbottom = [
         0, 0, 0,
         p, 0, 0,
         0, 0, l,
@@ -32,7 +32,7 @@ export const blockGenerator = (p, l, t, front, back, upper, bottom, right, left)
         p, 0, 0,
         p, 0, l
     ]
-    const vbottom = [
+    const vupper = [
         0, t, 0,
         0, t, l,
         p, t, 0,
@@ -62,6 +62,11 @@ export const blockGenerator = (p, l, t, front, back, upper, bottom, right, left)
     
     return [vertices, colors]
 }
+
+// export const pyramidGenerator = () => {
+//     let arr;
+//     arr = blockGenerator()
+// }
 
 export const fGenerator = () => {
     // 'F' OBJECT VERTICES AND COLOR EXAMPLES USING gl.TRIANGLES
@@ -326,4 +331,127 @@ export const fGenerator = () => {
     ]
 
     return [vertices, colors]
+}
+
+export const circleGenerator = (rad, height, v, color) => {
+    let steps = 32;
+    let phi = 2.0 * Math.PI / steps;
+    let vecs = [];
+    let l = rad;
+
+    for (let i = 0; i < steps; i++) {
+      let angle = i * phi;
+      vecs.push([l * Math.cos(angle), height, l * Math.sin(angle)]);
+    }
+    vecs.push(vecs[0]);
+    
+    let vert = [];
+    let colors = [];
+    for (let i = 0; i < vecs.length - 1; i++) {
+        vert.push(
+            ...vecs[i],
+            ...v,
+            ...vecs[i + 1]
+        );
+        colors.push(...color, ...color, ...color);
+        vert.push(
+            ...vecs[i],
+            ...vecs[i + 1],
+            ...v,
+        );
+        colors.push(...color, ...color, ...color);
+    }
+    return [vert, colors, vecs];
+}
+
+export const circleHollowGenerator = (rad, height, v, color) => {
+    let steps = 32;
+    let phi = 2.0 * Math.PI / steps;
+    let vecs = [];
+    let l = rad/2;
+
+    for (let i = 0; i < steps; i++) {
+      let angle = i * phi;
+      vecs.push([l * Math.cos(angle), height, l * Math.sin(angle)]);
+    }
+    vecs.push(vecs[0]);
+    console.log(vecs)
+    
+    let vert = [];
+    let colors = [];
+    for (let i = 0; i < vecs.length - 1; i++) {
+        vert.push(
+            ...vecs[i],
+            ...v,
+            ...vecs[i + 1]
+        );
+        colors.push(...color, ...color, ...color);
+        vert.push(
+            ...vecs[i],
+            ...vecs[i + 1],
+            ...v,
+        );
+        colors.push(...color, ...color, ...color);
+    }
+    return [vert, colors, vecs];
+}
+
+export const doubleCircleGenerator = (height, rad, ctop, cbottom) => {
+    let vTop =    [0,  height / 2      , 0.0];
+    let vBottom = [0, (height / 2) * -1, 0.0];
+    let [topCircle, topColors, topVecs] = circleHollowGenerator(rad, height / 2, vTop, ctop);
+    let [bottomCircle, bottomColors, bottomVecs] = circleHollowGenerator(rad, (height / 2) * -1, vBottom, cbottom);
+    const vert = [
+        ...topCircle,
+        ...bottomCircle
+    ];
+    const color = [
+        ...topColors,
+        ...bottomColors
+    ];
+    return [vert, color];
+}
+
+export const squareGenerator = (a, b, c, d, color) => {
+    const vert = [
+        ...a,
+        ...b,
+        ...c,
+        ...b,
+        ...d,
+        ...c,
+    ];
+    const colors = _generateColors([color]);
+    return [vert, colors];
+}
+
+export const tubeGenerator = (height, rad, color) => {
+    let vTop =    [0.0,  height / 2      , 0.0];
+    let vBottom = [0.0, (height / 2) * -1, 0.0];
+    let [topCircle, topColors, topVecs] = circleGenerator(rad, height / 2, vTop, [0,0,0]);
+    let [bottomCircle, bottomColors, bottomVecs] = circleGenerator(rad, (height / 2) * -1, vBottom, [0, 0, 0]);
+    let sqvert, sqcolor;
+    let verts = [];
+    let colors = [];
+    for (let i = 0; i < topVecs.length - 1; i++) {
+        [sqvert, sqcolor] = squareGenerator(
+            topVecs[i],
+            topVecs[i + 1],
+            bottomVecs[i],
+            bottomVecs[i + 1],
+            color
+        );
+        verts.push(...sqvert);
+        colors.push(...sqcolor);
+        [sqvert, sqcolor] = squareGenerator(
+            topVecs[i + 1],
+            topVecs[i],
+            bottomVecs[i + 1],
+            bottomVecs[i],
+            color
+        );
+        verts.push(...sqvert);
+        colors.push(...sqcolor);
+    }
+    return [verts, colors];
 }
