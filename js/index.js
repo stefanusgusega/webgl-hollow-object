@@ -157,7 +157,7 @@ async function main() {
     // Declare reusable variables
     let vertices, colors;
 
-    [vertices, colors] = fGenerator();
+    [vertices, colors] = cubeGenerator();
     const glObject = new GLObject(0, program, gl, gl.TRIANGLES);
     glObject.setBaseProjectionMatrix(baseProjection);
     glObject.setVertexArray(vertices);
@@ -194,7 +194,7 @@ async function main() {
     const renderer = new Renderer();
     const pyramid = makePyramidEdges(objId++, program, gl, baseProjection);
     const pyramid2 = makePyramidEdges(objId++, program, gl, baseProjection);
-    // renderer.addObject(glObject);
+    renderer.addObject(glObject);
     // renderer.addObject(glObject2);
     // renderer.addObject(cube);
     renderer.addObject(pyramid);
