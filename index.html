@@ -12,9 +12,104 @@
 <body>
     <div class="p-1">
         <h1>Hollow Object</h1>
-        <div class="main-container">
-            <div class="canvas-container">
-                <canvas id="canvas"></canvas>
+        <div class="flex-container">
+            <div class="main-container flex-left">
+                <div class="canvas-container">
+                    <canvas id="canvas"></canvas>
+                </div>
+            </div>
+            <div class="flex-right">
+                <div class="p-half">
+                    <label for="object">
+                        Choose object:
+                    </label>
+                    <select id='object'>
+                        
+                    </select>
+                </div>
+                <div class="slidecontainer">
+                    <div class="p-half flex-container">
+                        <div class="flex-half">
+                            <label for="transX">Translate X:</label>
+                            <input type="range" min="0"  value="0" class="slider" id="transX">
+                        </div>
+                        <div class="flex-half flex-container">
+                            Value: <p id="transXVal"></p>
+                        </div>
+                    </div>
+                    <div class="p-half flex-container">
+                        <div class="flex-half">
+                            <label for="transY">Translate Y:</label>
+                            <input type="range" min="0"  value="0" class="slider" id="transY">
+                        </div>
+                        <div class="flex-half flex-container">
+                            Value: <p id="transYVal"></p>
+                        </div>
+                    </div>
+                    <div class="p-half flex-container">
+                        <div class="flex-half">
+                            <label for="transZ">Translate Z:</label>
+                            <input type="range" min="0"  value="0" class="slider" id="transZ">
+                        </div>
+                        <div class="flex-half flex-container">
+                            Value: <p id="transZVal"></p>
+                        </div>
+                    </div>
+                    <div class="p-half flex-container">
+                        <div class="flex-half">
+                            <label for="rotX">Rotate X:</label>
+                            <input type="range" min="0" max='360' value="0" class="slider" id="rotX">
+                        </div>
+                        <div class="flex-half flex-container">
+                            Value: <p id="rotXVal"></p>
+                        </div>
+                    </div>
+                    <div class="p-half flex-container">
+                        <div class="flex-half">
+                            <label for="rotY">Rotate Y:</label>
+                            <input type="range" min="0" max='360' value="0" class="slider" id="rotY">
+                        </div>
+                        <div class="flex-half flex-container">
+                            Value: <p id="rotYVal"></p>
+                        </div>
+                    </div>
+                    <div class="p-half flex-container">
+                        <div class="flex-half">
+                            <label for="rotZ">Rotate Z:</label>
+                            <input type="range" min="0" max='360' value="0" class="slider" id="rotZ">
+                        </div>
+                        <div class="flex-half flex-container">
+                            Value: <p id="rotZVal"></p>
+                        </div>
+                    </div>
+                    <div class="p-half flex-container">
+                        <div class="flex-half">
+                            <label for="scaX">Scale X:</label>
+                            <input type="range" min="-5" max='5' value="1" step = '0.01' class="slider" id="scaX">
+                        </div>
+                        <div class="flex-half flex-container">
+                            Value: <p id="scaXVal"></p>
+                        </div>
+                    </div>
+                    <div class="p-half flex-container">
+                        <div class="flex-half">
+                            <label for="scaY">Scale Y:</label>
+                            <input type="range" min="-5" max='5' value="1" step='0.01' class="slider" id="scaY">
+                        </div>
+                        <div class="flex-half flex-container">
+                            Value: <p id="scaYVal"></p>
+                        </div>
+                    </div>
+                    <div class="p-half flex-container">
+                        <div class="flex-half">
+                            <label for="scaZ">Scale Z:</label>
+                            <input type="range" min="-5" max='5' value="1" step='0.01' class="slider" id="scaZ">
+                        </div>
+                        <div class="flex-half flex-container">
+                            Value: <p id="scaZVal"></p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
