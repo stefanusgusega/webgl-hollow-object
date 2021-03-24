@@ -16,8 +16,8 @@ let gl = canvas.getContext('webgl2');
 document.getElementById('transX').max = canvas.width;
 document.getElementById('transY').max = canvas.height;
 document.getElementById('transZ').max = (canvas.width + canvas.height) / 2;
-document.getElementById('camTransX').max = canvas.width;
-document.getElementById('camTransY').max = canvas.height;
+document.getElementById('camTransX').max = 2000;
+document.getElementById('camTransY').max = 2000;
 document.getElementById('camTransZ').max = 2000;
 
 var resetCameraButton = document.getElementById("reset");
@@ -581,9 +581,9 @@ async function main() {
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
         // let [tx, ty, tz] = renderer.getCameraPosition()
-        // renderer.setCameraPosition(tx, ty, tz+1)
+        // renderer.setCameraPosition(tx, ty, tz+3)
         // let [x, y, z] = renderer.getCameraAngle()
-        // renderer.setCameraAngle(x, y+1, z)
+        // renderer.setCameraAngle(x, y+3, z)
         
         renderer.render();
         
