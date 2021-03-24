@@ -5,7 +5,7 @@ class Renderer {
         this.objects = []
         this.count
         this.cameraAngle = [0, 0, 0]
-        this.cameraPosition = [0, 0, 50]
+        this.cameraPosition = [0, 0, 200]
         this.cameraMat = this.computeCamera()
     }
 

@@ -16,7 +16,59 @@ let gl = canvas.getContext('webgl2');
 document.getElementById('transX').max = canvas.width;
 document.getElementById('transY').max = canvas.height;
 document.getElementById('transZ').max = (canvas.width + canvas.height) / 2;
+document.getElementById('camTransX').max = canvas.width;
+document.getElementById('camTransY').max = canvas.height;
+document.getElementById('camTransZ').max = (canvas.width + canvas.height) / 2;
 
+var resetCameraButton = document.getElementById("reset");
+
+var camTransXSlider = document.getElementById("camTransX");
+var camTransXVal = document.getElementById("camTransXVal");
+camTransXVal.innerHTML = camTransXSlider.value;
+
+camTransXSlider.oninput = function() {
+    camTransXVal.innerHTML = this.value;
+}
+
+var camTransYSlider = document.getElementById("camTransY");
+var camTransYVal = document.getElementById("camTransYVal");
+camTransYVal.innerHTML = camTransYSlider.value;
+
+camTransYSlider.oninput = function() {
+    camTransYVal.innerHTML = this.value;
+}
+
+var camTransZSlider = document.getElementById("camTransZ");
+var camTransZVal = document.getElementById("camTransZVal");
+camTransZVal.innerHTML = camTransZSlider.value;
+
+camTransZSlider.oninput = function() {
+    camTransZVal.innerHTML = this.value;
+}
+
+var camRotXSlider = document.getElementById("camRotX");
+var camRotXVal = document.getElementById("camRotXVal");
+camRotXVal.innerHTML = camRotXSlider.value;
+
+camRotXSlider.oninput = function() {
+    camRotXVal.innerHTML = this.value;
+}
+
+var camRotYSlider = document.getElementById("camRotY");
+var camRotYVal = document.getElementById("camRotYVal");
+camRotYVal.innerHTML = camRotYSlider.value;
+
+camRotYSlider.oninput = function() {
+    camRotYVal.innerHTML = this.value;
+}
+
+var camRotZSlider = document.getElementById("camRotZ");
+var camRotZVal = document.getElementById("camRotZVal");
+camRotZVal.innerHTML = camRotZSlider.value;
+
+camRotZSlider.oninput = function() {
+    camRotZVal.innerHTML = this.value;
+}
 /* For translation X */
 var transXSlider = document.getElementById("transX");
 var transXVal = document.getElementById("transXVal");
@@ -276,7 +328,7 @@ async function main() {
             let near = 800;
             let far = -800;
             baseProjection = orthographic(left, right, bottom, top, near, far);
-            renderer.setCameraPosition(0, 0, 0);
+            resetCameraView()
             renderer.objects.forEach(obj => {
                 let [x, y, z] = obj.getPosition();
                 if (z < -100) {
@@ -311,9 +363,40 @@ async function main() {
             let near = 800;
             let far = -800;
             baseProjection = oblique(left, right, bottom, top, near, far, CABINET_PROJECTION_ANGLE);
-            renderer.setCameraPosition(0, 0, 0);
+            resetCameraView()
         }
         renderer.changeProjection(baseProjection);
+    }
+    const resetCameraView = () => {
+        renderer.setCameraAngle(0, 0, 0);
+        renderer.setCameraPosition(0, 0, 200);
+        // update trans slider
+        camTransXSlider.value = 0;
+        camTransXVal.innerHTML = camTransXSlider.value;
+        camTransYSlider.value = 0;
+        camTransYVal.innerHTML = camTransYSlider.value;
+        camTransZSlider.value = 200;
+        camTransZVal.innerHTML = camTransZSlider.value;
+        // update rot slider
+        camRotXSlider.value = 0;
+        camRotXVal.innerHTML = camRotXSlider.value;
+        camRotYSlider.value = 0;
+        camRotYVal.innerHTML = camRotYSlider.value;
+        camRotZSlider.value = 0;
+        camRotZVal.innerHTML = camRotZSlider.value;
+    }
+    const updateCam = changeType => {
+        if (changeType == 'camTransX' || changeType == 'camTransY' || changeType == 'camTransZ') {
+            let x = camTransXSlider.value;
+            let y = camTransYSlider.value;
+            let z = camTransZSlider.value;
+            renderer.setCameraPosition(x, y, z);
+        } else if (changeType == 'camRotX' || changeType == 'camRotY' || changeType == 'camRotZ') {
+            let x = camRotXSlider.value;
+            let y = camRotYSlider.value;
+            let z = camRotZSlider.value;
+            renderer.setCameraAngle(x, y, z);
+        }
     }
     // EVENT LISTENERS
     select.addEventListener('change', (e) => {
@@ -324,6 +407,28 @@ async function main() {
     })
     fovSlider.addEventListener('input', (e) => {
         updateProjection(proj.value)
+    })
+
+    resetCameraButton.addEventListener('click', (e) => {
+        resetCameraView()
+    })
+    camTransXSlider.addEventListener('input', (e) => {
+        updateCam(e.target.id)
+    })
+    camTransYSlider.addEventListener('input', (e) => {
+        updateCam(e.target.id)
+    })
+    camTransZSlider.addEventListener('input', (e) => {
+        updateCam(e.target.id)
+    })
+    camRotXSlider.addEventListener('input', (e) => {
+        updateCam(e.target.id)
+    })
+    camRotYSlider.addEventListener('input', (e) => {
+        updateCam(e.target.id)
+    })
+    camRotZSlider.addEventListener('input', (e) => {
+        updateCam(e.target.id)
     })
     transXSlider.addEventListener('input', (e) => {
         updateObj(e.target.id)
@@ -362,10 +467,10 @@ async function main() {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
-        let [tx, ty, tz] = renderer.getCameraPosition()
-        renderer.setCameraPosition(tx, ty, tz+1)
-        let [x, y, z] = renderer.getCameraAngle()
-        renderer.setCameraAngle(x, y+1, z)
+        // let [tx, ty, tz] = renderer.getCameraPosition()
+        // renderer.setCameraPosition(tx, ty, tz+1)
+        // let [x, y, z] = renderer.getCameraAngle()
+        // renderer.setCameraAngle(x, y+1, z)
         
         renderer.render();
         
