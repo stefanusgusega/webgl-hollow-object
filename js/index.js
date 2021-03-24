@@ -1,8 +1,8 @@
 import initShader from './loader/shaders.js';
 import GLObject from './objects/GLObject.js';
+import { cubeGenerator } from './objects/Cube.js';
 import { makePyramidEdges } from './objects/Pyramid.js';
 import Renderer from './renderer.js';
-import { fGenerator, blockGenerator } from './utils/generator.js';
 import { cylinderGenerator } from './objects/cylinder.js'
 import { orthographic, perspective } from './utils/projection.js';
 
@@ -10,13 +10,12 @@ let canvas = document.getElementById('canvas');
 canvas.width = 800;
 canvas.height = 600;
 let gl = canvas.getContext('webgl2');
-var objId = 0;
 
 
 /* Setting max translation of each x, y, z */
 document.getElementById('transX').max = canvas.width;
 document.getElementById('transY').max = canvas.height;
-document.getElementById('transZ').max = (canvas.width + canvas.height)/2;
+document.getElementById('transZ').max = (canvas.width + canvas.height) / 2;
 
 /* For translation X */
 var transXSlider = document.getElementById("transX");
@@ -25,7 +24,7 @@ transXVal.innerHTML = transXSlider.value; // Display the default slider value
 
 // Update the current slider value (each time you drag the slider handle)
 transXSlider.oninput = function() {
-  transXVal.innerHTML = this.value;
+    transXVal.innerHTML = this.value;
 }
 
 /* For translation Y */
@@ -35,7 +34,7 @@ transYVal.innerHTML = transYSlider.value; // Display the default slider value
 
 // Update the current slider value (each time you drag the slider handle)
 transYSlider.oninput = function() {
-  transYVal.innerHTML = this.value;
+    transYVal.innerHTML = this.value;
 }
 
 /* For translation Z */
@@ -45,7 +44,7 @@ transZVal.innerHTML = transZSlider.value; // Display the default slider value
 
 // Update the current slider value (each time you drag the slider handle)
 transZSlider.oninput = function() {
-  transZVal.innerHTML = this.value;
+    transZVal.innerHTML = this.value;
 }
 
 /* For rotation X */
@@ -55,7 +54,7 @@ rotXVal.innerHTML = rotXSlider.value; // Display the default slider value
 
 // Update the current slider value (each time you drag the slider handle)
 rotXSlider.oninput = function() {
-  rotXVal.innerHTML = this.value;
+    rotXVal.innerHTML = this.value;
 }
 
 /* For rotation Y */
@@ -65,7 +64,7 @@ rotYVal.innerHTML = rotYSlider.value; // Display the default slider value
 
 // Update the current slider value (each time you drag the slider handle)
 rotYSlider.oninput = function() {
-  rotYVal.innerHTML = this.value;
+    rotYVal.innerHTML = this.value;
 }
 
 /* For rotation Z */
@@ -75,7 +74,7 @@ rotZVal.innerHTML = rotZSlider.value; // Display the default slider value
 
 // Update the current slider value (each time you drag the slider handle)
 rotZSlider.oninput = function() {
-  rotZVal.innerHTML = this.value;
+    rotZVal.innerHTML = this.value;
 }
 
 /* For scaling X */
@@ -85,7 +84,7 @@ scaXVal.innerHTML = scaXSlider.value; // Display the default slider value
 
 // Update the current slider value (each time you drag the slider handle)
 scaXSlider.oninput = function() {
-  scaXVal.innerHTML = this.value;
+    scaXVal.innerHTML = this.value;
 }
 
 /* For scaling Y */
@@ -95,7 +94,7 @@ scaYVal.innerHTML = scaYSlider.value; // Display the default slider value
 
 // Update the current slider value (each time you drag the slider handle)
 scaYSlider.oninput = function() {
-  scaYVal.innerHTML = this.value;
+    scaYVal.innerHTML = this.value;
 }
 
 /* For sacling Z */
@@ -105,7 +104,7 @@ scaZVal.innerHTML = scaZSlider.value; // Display the default slider value
 
 // Update the current slider value (each time you drag the slider handle)
 scaZSlider.oninput = function() {
-  scaZVal.innerHTML = this.value;
+    scaZVal.innerHTML = this.value;
 }
 
 async function main() {
@@ -171,12 +170,12 @@ async function main() {
     let vertices, colors;
 
     [vertices, colors] = cylinderGenerator(
-        50, 50,
+        75, 75,
         [255, 0, 0],
         [0, 0, 255],
         [0, 255, 0]
     );
-    const cylinder = new GLObject(objId++, program, gl, gl.TRIANGLES);
+    const cylinder = new GLObject(2, 'cylinder', program, gl, gl.TRIANGLES);
     cylinder.setBaseProjectionMatrix(baseProjection);
     cylinder.setVertexArray(vertices);
     cylinder.setColor(colors);
@@ -185,21 +184,28 @@ async function main() {
     cylinder.setScale(1, 1, 1);
     cylinder.bind();
 
+    [vertices, colors] = cubeGenerator();
+    const cube = new GLObject(0, 'cube', program, gl, gl.TRIANGLES);
+    cube.setBaseProjectionMatrix(baseProjection);
+    cube.setVertexArray(vertices);
+    cube.setColor(colors);
+    cube.setPosition(45, 150, 0);
+    cube.setRotation(40, 25, 325);
+    cube.setScale(1, 1, 1);
+    cube.bind();
+
+    const pyramid = makePyramidEdges(1, program, gl, baseProjection);
+    
     const renderer = new Renderer();
-    const pyramid = makePyramidEdges(objId++, program, gl, baseProjection);
-    // const pyramid2 = makePyramidEdges(objId++, program, gl, baseProjection);
-    // renderer.addObject(glObject);
-    // renderer.addObject(glObject2);
-    // renderer.addObject(cube);
+    renderer.addObject(cube);
     renderer.addObject(pyramid);
-    // renderer.addObject(pyramid2);
     renderer.addObject(cylinder);
 
     /* Adding option to object option based on the object defined */
     var select = document.getElementById('object');
     renderer.objects.forEach(i => {
         var opt = document.createElement('option');
-        opt.text = i.id;
+        opt.text = i.name;
         opt.value = i.id;
         select.add(opt);
     })
@@ -209,8 +215,8 @@ async function main() {
         let obj = renderer.objects[id]
 
         let tempXTrans, tempYTrans, tempZTrans,
-        tempXRot, tempYRot, tempZRot,
-        tempXScale,tempYScale, tempZScale;
+            tempXRot, tempYRot, tempZRot,
+            tempXScale, tempYScale, tempZScale;
         [tempXTrans, tempYTrans, tempZTrans] = obj.getPosition();
         [tempXRot, tempYRot, tempZRot] = obj.getRotation();
         [tempXScale, tempYScale, tempZScale] = obj.getScale();
@@ -331,74 +337,11 @@ async function main() {
     //update initial value
     updateSlider(select.value)
     
-    // var diffXTrans, diffYTrans, diffZTrans,
-    // diffXRot, diffYRot, diffZRot,
-    // diffXSca, diffYSca, diffZSca
-    // var object = renderer.objects;
-    // let xTrans = [],yTrans = [],zTrans = [],
-    // xRot = [], yRot = [], zRot = [],
-    // xScale = [], yScale = [], zScale = [];
-    
-    // renderer.objects.forEach(obj => {
-    //     let tempXTrans, tempYTrans, tempZTrans,
-    //     tempXRot, tempYRot, tempZRot,
-    //     tempXScale,tempYScale, tempZScale;
-    //     [tempXTrans, tempYTrans, tempZTrans] = obj.getPosition();
-    //     [tempXRot, tempYRot, tempZRot] = obj.getRotation();
-    //     [tempXScale, tempYScale, tempZScale] = obj.getScale();
-    //     xTrans.push(tempXTrans);
-    //     yTrans.push(tempYTrans);
-    //     zTrans.push(tempZTrans);
-    //     xRot.push(tempXRot);
-    //     yRot.push(tempYRot);
-    //     zRot.push(tempZRot);
-    //     xScale.push(tempXScale);
-    //     yScale.push(tempYScale);
-    //     zScale.push(tempZScale);
-    // })
 
     function render() {
-        /* Get the input from option select */
-        // var selectedObjId = parseInt(select.value);
-        // let obj = renderer.objects[selectedObjId];
-        // fov = parseInt(fovSlider.value);
-        // renderer.objects.forEach(o => {
-        //   if (proj.value === '0') {
-        //     o.setBaseProjectionMatrix(orthographic(left, right, bottom, top, near, far));
-        //     // console.log(proj.value);
-        //   }
-        //   else if (proj.value === '1') {
-        //     o.setBaseProjectionMatrix(perspective(fov, aspect, near, far));
-        //     // console.log(proj.value);
-            
-        //   }
-        //   else if (proj.value === '2') {
-        //     o.setBaseProjectionMatrix(orthographic(left, right, bottom, top, near, far));
-        //     // console.log(proj.value);
-            
-            
-        //   }
-  
-        // })
-        
-        // console.log(selectedObj);
         gl.clearColor(1, 1, 1, 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-        // Trying animation
-        // let x, y, z;
-        // [x, y, z] = glObject.getRotation();
-        // glObject.setRotation(x + 1, y, z);
-        // [x, y, z] = glObject2.getRotation();
-        // glObject2.setRotation(x, y + 1 , z );
-        // [x, y, z] = cube.getRotation();
-        // cube.setRotation(x + 0.1, y + 1 , z);
-        // [x,y,z] = pyramid.getRotation();
-        // pyramid.setRotation(x+0.5,y+0.5,z+0.5);
-        
-        // obj.setPosition(xTrans[selectedObjId]+parseFloat(transXSlider.value), yTrans[selectedObjId]+parseFloat(transYSlider.value), zTrans[selectedObjId]+parseFloat(transZSlider.value));
-        // obj.setRotation(parseFloat(rotXSlider.value), parseFloat(rotYSlider.value), parseFloat(rotZSlider.value));
-        // obj.setScale(parseFloat(scaXSlider.value), parseFloat(scaYSlider.value), parseFloat(scaZSlider.value));
         
         renderer.render();
         

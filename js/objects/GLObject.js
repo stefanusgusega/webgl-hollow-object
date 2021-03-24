@@ -1,8 +1,9 @@
 import { mmult } from '../utils/matrix.js'
 
 class GLObject {
-    constructor(id, shader, gl, primitiveType) {
+    constructor(id, name, shader, gl, primitiveType) {
         this.id = id
+        this.name = name
         this.shader = shader
         this.gl = gl
         this.primitiveType = primitiveType
